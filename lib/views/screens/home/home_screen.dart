@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:timetable_app/controllers/user_controller.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
@@ -20,6 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String greeting = '';
+    int hour = DateTime.now().hour;
+    if (hour > 12 && hour < 16) {
+      greeting = 'Afternoon';
+    } else if (hour >= 16) {
+      greeting = 'Evening';
+    }
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
@@ -47,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'Good Afternoon\n',
+                                      text: 'Good $greeting\n',
                                       style: medium(16).copyWith(
                                         color: Theme.of(context).primaryColor,
                                       ),
@@ -105,6 +113,8 @@ class UpcomingClass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String day = DateFormat().add_E().format(DateTime.now());
+    String date = DateFormat().add_d().format(DateTime.now());
     return Container(
       height: 115,
       decoration: BoxDecoration(
@@ -124,9 +134,9 @@ class UpcomingClass extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  // TODO: TAKE ACTUAL DAY AND FORMAT ACCODINGLY
-                  'FRI\n09',
+                  '${day.toUpperCase()}\n${date.padLeft(2, '0')}',
                   style: bold(24).copyWith(color: Colors.white),
+                  textAlign: TextAlign.center,
                 ),
               ),
               20.w,
