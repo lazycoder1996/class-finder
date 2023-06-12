@@ -39,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(DateTime.now().hour + DateTime.now().minute);
     init();
     String greeting = '';
     int hour = DateTime.now().hour;
