@@ -47,6 +47,7 @@ class ApiClient extends GetxService {
       ).timeout(Duration(seconds: timeoutInSeconds));
       return handleResponse(response, uri);
     } catch (e) {
+      print(e);
       return Response(statusCode: 1, statusText: noInternetMessage);
     }
   }

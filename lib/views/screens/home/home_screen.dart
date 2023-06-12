@@ -23,7 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     String greeting = '';
     int hour = DateTime.now().hour;
-    if (hour > 12 && hour < 16) {
+    if (hour >= 0 && hour < 12) {
+      greeting = 'Morning';
+    } else if (hour >= 12 && hour < 16) {
       greeting = 'Afternoon';
     } else if (hour >= 16) {
       greeting = 'Evening';
@@ -49,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       GetBuilder<UserController>(builder: (userController) {
                         return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Flexible(
                               child: Text.rich(
