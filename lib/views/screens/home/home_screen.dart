@@ -31,13 +31,15 @@ class _HomeScreenState extends State<HomeScreen> {
   init() async {
     await Get.find<RoomController>().fetchLiveRooms({
       // 'time': 800,
-      'time': DateTime.now().hour,
+      'time': int.parse(DateTime.now().hour.toString().padLeft(2, '0') +
+          DateTime.now().minute.toString().padLeft(2, '0')),
       'day': DateFormat().add_EEEE().format(DateTime.now()).toLowerCase(),
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    print(DateTime.now().hour + DateTime.now().minute);
     init();
     String greeting = '';
     int hour = DateTime.now().hour;

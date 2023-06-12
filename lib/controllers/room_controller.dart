@@ -28,7 +28,6 @@ class RoomController extends GetxController implements GetxService {
       );
       // _liveRooms!.addAll(liveRooms!.toList());
     } else {}
-    print('hello');
     _loadingLiveRooms = false;
     update();
   }
