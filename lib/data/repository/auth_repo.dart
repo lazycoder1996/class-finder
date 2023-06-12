@@ -16,8 +16,9 @@ class AuthRepo {
   }
 
   // keep user alive
-  Future<void> updateToken(bool value) async {
+  Future<void> updateToken(bool value, String ref) async {
     await sharedPreferences.setBool(AppConstants.loggedIn, value);
+    await sharedPreferences.setString(AppConstants.userReference,ref);
   }
 
   bool loggedIn() {
@@ -27,5 +28,6 @@ class AuthRepo {
   // logout
   Future<void> logout() async {
     await sharedPreferences.remove(AppConstants.loggedIn);
+    await sharedPreferences.remove(AppConstants.userReference);
   }
 }

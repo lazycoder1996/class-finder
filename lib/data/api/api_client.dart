@@ -15,9 +15,19 @@ class ApiClient extends GetxService {
 
   Future<Response> getData(String uri, {Map<String, dynamic>? query}) async {
     try {
+      if (query != null) {
+        uri += '?';
+        bool header = false;
+        for (var i in query.entries) {
+          uri += '${header ? '&' : ''}${i.key}=${i.value}';
+          header = true;
+        }
+      }
+
       if (Foundation.kDebugMode) {
         print('====> API Call: $uri');
       }
+
       Http.Response response = await Http.get(
         Uri.parse(appBaseUrl + uri),
         headers: headers,

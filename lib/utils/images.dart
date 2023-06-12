@@ -9,4 +9,6 @@ class Images {
   static const profilePicture = 'assets/images/profilepicture.png';
   static const bubble = 'assets/images/bubble.svg';
   static const logout = 'assets/images/logout.svg';
+  static const courseIcon = 'assets/images/course.svg';
+  static const roomIcon = 'assets/images/room.svg';
 }

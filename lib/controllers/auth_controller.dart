@@ -34,7 +34,7 @@ class AuthController extends GetxController implements GetxService {
       responseModel = ResponseModel(true, 'Authenticated');
       Get.find<UserController>()
           .setUser(UserModel.fromMap(response.body['user']));
-      await authRepo.updateToken(true);
+      await authRepo.updateToken(true, response.body['user']['reference']);
     } else {
       String error;
       if (response.body == null) {

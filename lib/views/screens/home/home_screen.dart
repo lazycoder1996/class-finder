@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:timetable_app/controllers/room_controller.dart';
 import 'package:timetable_app/controllers/user_controller.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
 import 'package:timetable_app/utils/app_colors.dart';
 import 'package:timetable_app/utils/images.dart';
+import 'package:timetable_app/views/screens/home/widget/card_widget.dart';
 import 'package:timetable_app/views/screens/home/widget/title_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,7 +22,22 @@ class _HomeScreenState extends State<HomeScreen> {
   ScrollController scrollController = ScrollController();
 
   @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  init() async {
+    await Get.find<RoomController>().fetchLiveRooms({
+      'time': 1200,
+      // 'time': DateTime.now().hour,
+      'day': DateFormat().add_EEEE().format(DateTime.now()).toLowerCase(),
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    init();
     String greeting = '';
     int hour = DateTime.now().hour;
     if (hour >= 0 && hour < 12) {
@@ -31,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       greeting = 'Evening';
     }
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
         child: Column(
@@ -95,14 +113,56 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            20.h,
-            TitleWidget(
-              title: 'Ongoing Session',
-              onPressed: () {},
-            ),
-            TitleWidget(
-              title: 'Empty Rooms',
-              onPressed: () {},
+            10.h,
+            GetBuilder<RoomController>(
+              builder: (roomController) {
+                return Column(
+                  children: [
+                    TitleWidget(
+                      title: 'Ongoing Session',
+                      onPressed: () {},
+                    ),
+                    GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisExtent: 130,
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 5,
+                        ),
+                        itemCount: roomController.liveRooms!.length,
+                        shrinkWrap: true,
+                        primary: false,
+                        itemBuilder: (context, index) {
+                          return RoomItem(
+                            room: roomController.liveRooms![index],
+                          );
+                        }),
+                    TitleWidget(
+                      title: 'Empty Rooms',
+                      onPressed: () {},
+                    ),
+                    10.h,
+                    GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisExtent: 130,
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 5,
+                        ),
+                        itemCount: roomController.liveRooms!.length,
+                        shrinkWrap: true,
+                        primary: false,
+                        itemBuilder: (context, index) {
+                          return RoomItem(
+                            room: roomController.liveRooms![index],
+                            occupied: false,
+                          );
+                        }),
+                  ],
+                );
+              },
             ),
           ],
         ),
