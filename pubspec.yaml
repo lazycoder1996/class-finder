@@ -42,7 +42,7 @@ dependencies:
   http: ^0.13.5
   shared_preferences: ^2.1.2
   intl: ^0.18.1
-  shimmer: ^3.0.0
+  loading_animation_widget: ^1.2.0+4
 
 dev_dependencies:
   flutter_test:

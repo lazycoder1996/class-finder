@@ -8,6 +8,7 @@ import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
 import 'package:timetable_app/utils/app_colors.dart';
 import 'package:timetable_app/utils/images.dart';
+import 'package:timetable_app/views/base/custom_loader.dart';
 import 'package:timetable_app/views/screens/home/widget/card_widget.dart';
 import 'package:timetable_app/views/screens/home/widget/title_widget.dart';
 
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   init() async {
     await Get.find<RoomController>().fetchLiveRooms({
-      // 'time': 1200,
+      // 'time': 800,
       'time': DateTime.now().hour,
       'day': DateFormat().add_EEEE().format(DateTime.now()).toLowerCase(),
     });
@@ -122,44 +123,66 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: 'Ongoing Session',
                       onPressed: () {},
                     ),
-                    GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisExtent: 130,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 5,
-                        ),
-                        itemCount: roomController.liveRooms!.length,
-                        shrinkWrap: true,
-                        primary: false,
-                        itemBuilder: (context, index) {
-                          return RoomItem(
-                            room: roomController.liveRooms![index],
-                          );
-                        }),
+                    !roomController.loadingLiveRooms
+                        ? roomController.liveRooms!.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'No data found',
+                                  style: bold(18),
+                                ),
+                              )
+                            : GridView.builder(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisExtent: 130,
+                                  crossAxisSpacing: 5,
+                                  mainAxisSpacing: 5,
+                                ),
+                                itemCount: roomController.liveRooms!.length,
+                                shrinkWrap: true,
+                                primary: false,
+                                itemBuilder: (context, index) {
+                                  return RoomItem(
+                                    room: roomController.liveRooms![index],
+                                  );
+                                })
+                        : const Center(
+                            child: CustomLoader(),
+                          ),
                     TitleWidget(
                       title: 'Empty Rooms',
                       onPressed: () {},
                     ),
                     10.h,
-                    GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisExtent: 130,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 5,
-                        ),
-                        itemCount: roomController.liveRooms!.length,
-                        shrinkWrap: true,
-                        primary: false,
-                        itemBuilder: (context, index) {
-                          return RoomItem(
-                            room: roomController.liveRooms![index],
-                            occupied: false,
-                          );
-                        }),
+                    !roomController.loadingLiveRooms
+                        ? roomController.liveRooms!.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'No data found',
+                                  style: bold(18),
+                                ),
+                              )
+                            : GridView.builder(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisExtent: 130,
+                                  crossAxisSpacing: 5,
+                                  mainAxisSpacing: 5,
+                                ),
+                                itemCount: roomController.liveRooms!.length,
+                                shrinkWrap: true,
+                                primary: false,
+                                itemBuilder: (context, index) {
+                                  return RoomItem(
+                                    room: roomController.liveRooms![index],
+                                    occupied: false,
+                                  );
+                                })
+                        : const Center(
+                            child: CustomLoader(),
+                          ),
                   ],
                 );
               },

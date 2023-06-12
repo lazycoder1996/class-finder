@@ -18,6 +18,7 @@ class RoomController extends GetxController implements GetxService {
     update();
     Response response = await roomRepo.fetchLiveRooms(query);
     if (response.statusCode == 200) {
+      _liveRooms = [];
       List<dynamic> body = response.body['rooms'];
       _liveRooms = List.generate(
         body.length,
@@ -27,7 +28,7 @@ class RoomController extends GetxController implements GetxService {
       );
       // _liveRooms!.addAll(liveRooms!.toList());
     } else {}
-
+    print('hello');
     _loadingLiveRooms = false;
     update();
   }
