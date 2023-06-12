@@ -29,8 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   init() async {
     await Get.find<RoomController>().fetchLiveRooms({
-      'time': 1200,
-      // 'time': DateTime.now().hour,
+      // 'time': 1200,
+      'time': DateTime.now().hour,
       'day': DateFormat().add_EEEE().format(DateTime.now()).toLowerCase(),
     });
   }
