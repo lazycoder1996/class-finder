@@ -32,11 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: Image.asset(Images.biggerProfilePicture),
-                    ),
+                    Expanded(child: Image.asset(Images.biggerProfilePicture)),
                     15.h,
                     Text(
                       userFullname(userController.user!),

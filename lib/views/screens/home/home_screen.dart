@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:timetable_app/controllers/room_controller.dart';
 import 'package:timetable_app/controllers/timetime_controller.dart';
 import 'package:timetable_app/controllers/user_controller.dart';
@@ -32,20 +31,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   init() async {
     await Get.find<RoomController>().fetchLiveRooms({
-      'time': 900,
-      // 'time': ,
+      'time': DateFormatter.hhmm(),
       'day': DateFormatter.dayFromTime(),
     });
     await Get.find<RoomController>().fetchEmptyRooms({
-      'time': 900,
-      // 'time': int.parse(DateTime.now().hour.toString().padLeft(2, '0') +
-      //     DateTime.now().minute.toString().padLeft(2, '0')),
-      'day': DateFormat().add_EEEE().format(DateTime.now()).toLowerCase(),
+      'time': DateFormatter.hhmm(),
+      'day': DateFormatter.dayFromTime().toLowerCase(),
     });
     await Get.find<TimetableController>().getTimetable(
       {
-        'programme': 'Computer Engineering',
-        'year': 3,
+        'programme': Get.find<UserController>().user!.programme,
+        'year': Get.find<UserController>().user!.year,
         'day': DateFormatter.dayFromTime().toLowerCase()
       },
     );
