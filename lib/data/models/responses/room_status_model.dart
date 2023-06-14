@@ -1,12 +1,15 @@
 import 'dart:convert';
 
+import 'package:timetable_app/data/models/responses/course_model.dart';
+
 class RoomStatusModel {
   final String room;
   final String programme;
   final int year;
-  final String course;
+  final CourseModel course;
   final int startTime;
   final int endTime;
+  final bool status;
   RoomStatusModel({
     required this.room,
     required this.programme,
@@ -14,6 +17,7 @@ class RoomStatusModel {
     required this.course,
     required this.startTime,
     required this.endTime,
+    required this.status,
   });
 
   Map<String, dynamic> toMap() {
@@ -21,9 +25,10 @@ class RoomStatusModel {
       'room': room,
       'programme': programme,
       'year': year,
-      'course': course,
+      'course': course.toMap(),
       'start_time': startTime,
-      'end_time': endTime,
+      'endt_ime': endTime,
+      'status': status,
     };
   }
 
@@ -32,9 +37,10 @@ class RoomStatusModel {
       room: map['room'],
       programme: map['programme'],
       year: map['year'],
-      course: map['course'],
+      course: CourseModel.fromMap(map['course']),
       startTime: map['start_time'],
       endTime: map['end_time'],
+      status: map['status'],
     );
   }
 
@@ -45,7 +51,7 @@ class RoomStatusModel {
 
   @override
   String toString() {
-    return 'RoomStatusReponse(room: $room, programme: $programme, year: $year, course: $course, startTime: $startTime, endTime: $endTime)';
+    return 'RoomStatusModel(room: $room, programme: $programme, year: $year, course: $course, startTime: $startTime, endTime: $endTime, status: $status)';
   }
 
   @override
@@ -58,7 +64,8 @@ class RoomStatusModel {
         o.year == year &&
         o.course == course &&
         o.startTime == startTime &&
-        o.endTime == endTime;
+        o.endTime == endTime &&
+        o.status == status;
   }
 
   @override
@@ -68,6 +75,7 @@ class RoomStatusModel {
         year.hashCode ^
         course.hashCode ^
         startTime.hashCode ^
-        endTime.hashCode;
+        endTime.hashCode ^
+        status.hashCode;
   }
 }

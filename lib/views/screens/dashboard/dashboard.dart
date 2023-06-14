@@ -20,8 +20,8 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   List<Widget> screens = [
     const HomeScreen(),
-    const ProfileScreen(),
     const BookingScreen(),
+    const ProfileScreen(),
   ];
   int currentIndex = 0;
 

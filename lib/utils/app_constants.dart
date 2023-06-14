@@ -10,8 +10,11 @@ class AppConstants {
   static const courses = '/api/coures';
   static const rooms = '/api/rooms';
   static const liveRooms = '/live';
+  static const vacantRooms = '/vacant';
+  static const timetable = '/api/timetable';
 
   // SHARED PREFERENCES
   static const loggedIn = 'loggedIn';
   static const userReference = 'reference';
 }
+

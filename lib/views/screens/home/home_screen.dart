@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:timetable_app/controllers/room_controller.dart';
+import 'package:timetable_app/controllers/timetime_controller.dart';
 import 'package:timetable_app/controllers/user_controller.dart';
+import 'package:timetable_app/helpers/date_formatter.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
-import 'package:timetable_app/utils/app_colors.dart';
 import 'package:timetable_app/utils/images.dart';
 import 'package:timetable_app/views/base/custom_loader.dart';
 import 'package:timetable_app/views/screens/home/widget/card_widget.dart';
 import 'package:timetable_app/views/screens/home/widget/title_widget.dart';
+
+import 'widget/upcoming_class.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,11 +32,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   init() async {
     await Get.find<RoomController>().fetchLiveRooms({
-      // 'time': 800,
-      'time': int.parse(DateTime.now().hour.toString().padLeft(2, '0') +
-          DateTime.now().minute.toString().padLeft(2, '0')),
+      'time': 900,
+      // 'time': ,
+      'day': DateFormatter.dayFromTime(),
+    });
+    await Get.find<RoomController>().fetchEmptyRooms({
+      'time': 900,
+      // 'time': int.parse(DateTime.now().hour.toString().padLeft(2, '0') +
+      //     DateTime.now().minute.toString().padLeft(2, '0')),
       'day': DateFormat().add_EEEE().format(DateTime.now()).toLowerCase(),
     });
+    await Get.find<TimetableController>().getTimetable(
+      {
+        'programme': 'Computer Engineering',
+        'year': 3,
+        'day': DateFormatter.dayFromTime().toLowerCase()
+      },
+    );
   }
 
   @override
@@ -104,11 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       }),
                       15.h,
-                      Text(
-                        'Upcoming class',
-                        style: medium(16),
-                      ),
-                      10.h,
                       const UpcomingClass(),
                     ],
                   ),
@@ -124,15 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: 'Ongoing Session',
                       onPressed: () {},
                     ),
-                    !roomController.loadingLiveRooms
-                        ? roomController.liveRooms!.isEmpty
-                            ? Center(
-                                child: Text(
-                                  'No data found',
-                                  style: bold(18),
-                                ),
-                              )
-                            : GridView.builder(
+                    roomController.liveRooms != null
+                        ? roomController.liveRooms!.isNotEmpty
+                            ? GridView.builder(
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
@@ -148,6 +151,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     room: roomController.liveRooms![index],
                                   );
                                 })
+                            : Center(
+                                child: Text(
+                                'No data found',
+                                style: bold(18),
+                              ))
                         : const Center(
                             child: CustomLoader(),
                           ),
@@ -155,16 +163,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: 'Empty Rooms',
                       onPressed: () {},
                     ),
-                    10.h,
-                    !roomController.loadingLiveRooms
-                        ? roomController.liveRooms!.isEmpty
-                            ? Center(
-                                child: Text(
-                                  'No data found',
-                                  style: bold(18),
-                                ),
-                              )
-                            : GridView.builder(
+                    roomController.emptyRooms != null
+                        ? roomController.emptyRooms!.isNotEmpty
+                            ? GridView.builder(
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
@@ -172,15 +173,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   crossAxisSpacing: 5,
                                   mainAxisSpacing: 5,
                                 ),
-                                itemCount: roomController.liveRooms!.length,
+                                itemCount: roomController.emptyRooms!.length,
                                 shrinkWrap: true,
                                 primary: false,
                                 itemBuilder: (context, index) {
                                   return RoomItem(
-                                    room: roomController.liveRooms![index],
+                                    room: roomController.emptyRooms![index],
                                     occupied: false,
                                   );
                                 })
+                            : Center(
+                                child: Text(
+                                  'No data found',
+                                  style: bold(18),
+                                ),
+                              )
                         : const Center(
                             child: CustomLoader(),
                           ),
@@ -190,76 +197,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class UpcomingClass extends StatelessWidget {
-  const UpcomingClass({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    String day = DateFormat().add_E().format(DateTime.now());
-    String date = DateFormat().add_d().format(DateTime.now());
-    return Container(
-      height: 115,
-      decoration: BoxDecoration(
-        color: AppColors.secondary,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Stack(
-        alignment: AlignmentDirectional.bottomEnd,
-        children: [
-          Row(
-            children: [
-              Container(
-                alignment: Alignment.center,
-                width: 96,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '${day.toUpperCase()}\n${date.padLeft(2, '0')}',
-                  style: bold(24).copyWith(color: Colors.white),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              20.w,
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'ME 161',
-                      style: medium(16)
-                          .copyWith(color: Theme.of(context).primaryColor),
-                    ),
-                    Text(
-                      'BASIC MECHANICS',
-                      style: semiBold(16)
-                          .copyWith(color: Theme.of(context).primaryColor),
-                    ),
-                    const Spacer(),
-                    Text(
-                      '08:00 - 09:55',
-                      style: regular(14)
-                          .copyWith(color: Theme.of(context).primaryColor),
-                    ),
-                    Text(
-                      'PB201, Engineering',
-                      style: regular(15)
-                          .copyWith(color: Theme.of(context).primaryColor),
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-          SvgPicture.asset(Images.bubble)
-        ],
       ),
     );
   }

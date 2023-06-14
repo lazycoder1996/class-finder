@@ -7,6 +7,7 @@ class Images {
   static const booking = 'assets/images/booking.svg';
   static const profile = 'assets/images/profile.svg';
   static const profilePicture = 'assets/images/profilepicture.png';
+  static const biggerProfilePicture = 'assets/images/bigger_profile.png';
   static const bubble = 'assets/images/bubble.svg';
   static const logout = 'assets/images/logout.svg';
   static const courseIcon = 'assets/images/course.svg';

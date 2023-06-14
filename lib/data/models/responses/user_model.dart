@@ -31,7 +31,7 @@ class UserModel {
       'year': year,
       'profile_picture': profilePicture,
       'notification': notification,
-      'programme': programme,
+      'programme_name': programme,
       'role': role,
     };
   }
@@ -45,7 +45,7 @@ class UserModel {
       year: map['year'],
       profilePicture: map['profile_picture'],
       notification: map['notification'],
-      programme: map['programme'],
+      programme: map['programme_name'],
       role: map['role'],
     );
   }

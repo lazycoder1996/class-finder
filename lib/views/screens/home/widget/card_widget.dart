@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
-import 'package:timetable_app/data/models/responses/room_model.dart';
+import 'package:timetable_app/data/models/responses/room_status_model.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
 import 'package:timetable_app/utils/images.dart';
@@ -76,7 +76,7 @@ class RoomItem extends StatelessWidget {
                     children: [
                       if (occupied)
                         Text(
-                          room.course,
+                          room.course.code,
                           style: bold(20).copyWith(),
                         ),
                       Text(
