@@ -7,6 +7,7 @@ import 'package:timetable_app/helpers/date_formatter.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
 import 'package:timetable_app/utils/images.dart';
+import 'package:timetable_app/utils/user_formatter.dart';
 import 'package:timetable_app/views/base/custom_loader.dart';
 import 'package:timetable_app/views/screens/home/widget/card_widget.dart';
 import 'package:timetable_app/views/screens/home/widget/title_widget.dart';
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   init() async {
+    await Get.find<RoomController>().fetchAllRooms();
     await Get.find<RoomController>().fetchLiveRooms({
       'time': DateFormatter.hhmm(),
       'day': DateFormatter.dayFromTime(),
@@ -94,8 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     TextSpan(
-                                      text:
-                                          '${userController.user?.firstName} ${userController.user?.middleName} ${userController.user?.surname}',
+                                      text: userFullname(userController.user!),
                                       style: bold(24).copyWith(
                                         color: Theme.of(context).primaryColor,
                                       ),
@@ -126,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Column(
                   children: [
                     TitleWidget(
-                      title: 'Ongoing Session',
+                      title: 'Ongoing Sessions',
                       onPressed: () {},
                     ),
                     roomController.liveRooms != null
@@ -139,7 +140,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   crossAxisSpacing: 5,
                                   mainAxisSpacing: 5,
                                 ),
-                                itemCount: roomController.liveRooms!.length,
+                                itemCount: roomController.liveRooms!.length > 4
+                                    ? 4
+                                    : roomController.liveRooms!.length,
                                 shrinkWrap: true,
                                 primary: false,
                                 itemBuilder: (context, index) {
@@ -156,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: CustomLoader(),
                           ),
                     TitleWidget(
-                      title: 'Empty Rooms',
+                      title: 'Available Now',
                       onPressed: () {},
                     ),
                     roomController.emptyRooms != null
@@ -169,7 +172,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   crossAxisSpacing: 5,
                                   mainAxisSpacing: 5,
                                 ),
-                                itemCount: roomController.emptyRooms!.length,
+                                itemCount: roomController.emptyRooms!.length > 4
+                                    ? 4
+                                    : roomController.emptyRooms!.length,
+                                // itemCount: roomController.emptyRooms!.length,
                                 shrinkWrap: true,
                                 primary: false,
                                 itemBuilder: (context, index) {

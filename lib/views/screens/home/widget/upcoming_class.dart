@@ -52,34 +52,38 @@ class UpcomingClass extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          20.w,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  tableController.upcomingClass!.course.code,
-                                  style: medium(16).copyWith(
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                                Text(
-                                  tableController.upcomingClass!.course.name,
-                                  style: semiBold(16).copyWith(
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  '${tableController.upcomingClass!.startTime.toTime} - ${tableController.upcomingClass!.endTime.toTime}',
-                                  style: regular(14).copyWith(
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                                Text(
-                                  tableController.upcomingClass!.room,
-                                  style: regular(15).copyWith(
-                                      color: Theme.of(context).primaryColor),
-                                )
-                              ],
+                          15.w,
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    tableController.upcomingClass!.course.code,
+                                    style: medium(16).copyWith(
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  Text(
+                                    tableController.upcomingClass!.course.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: semiBold(16).copyWith(
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${tableController.upcomingClass!.startTime.toTime} - ${tableController.upcomingClass!.endTime.toTime}',
+                                    style: regular(14).copyWith(
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  Text(
+                                    tableController.upcomingClass!.room,
+                                    style: regular(15).copyWith(
+                                        color: Theme.of(context).primaryColor),
+                                  )
+                                ],
+                              ),
                             ),
                           )
                         ],

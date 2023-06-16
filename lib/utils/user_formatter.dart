@@ -1,5 +1,6 @@
 import 'package:timetable_app/data/models/responses/user_model.dart';
 
 String userFullname(UserModel user) {
-  return '${user.firstName} ${user.middleName ?? ''} ${user.surname}';
+  String middleName = user.middleName == null ? '' : ' ${user.middleName}';
+  return '${user.firstName}$middleName ${user.surname}';
 }

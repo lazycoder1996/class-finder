@@ -17,90 +17,138 @@ class RoomItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 100,
-      child: Card(
-        elevation: 2.5,
-        shape: RoundedRectangleBorder(
-          borderRadius: Dimensions.RadiusMedium.border,
-        ),
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: 10, vertical: occupied ? 3 : 12),
-          child: Stack(
-            alignment: AlignmentDirectional.topEnd,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: occupied
-                        ? MainAxisAlignment.spaceEvenly
-                        : MainAxisAlignment.spaceBetween,
-                    verticalDirection: occupied
-                        ? VerticalDirection.down
-                        : VerticalDirection.up,
-                    children: [
-                      if (occupied) ...[
+    return InkWell(
+      onTap: () {
+        // showModalBottomSheet(
+        //   shape: const RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.vertical(
+        //       top: Radius.circular(25),
+        //     ),
+        //   ),
+        //   context: context,
+        //   builder: (context) {
+        //     return Card(
+        //       margin: EdgeInsets.zero,
+        //       shape: const RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.vertical(
+        //           top: Radius.circular(25),
+        //         ),
+        //       ),
+        //       child: Padding(
+        //         padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
+        //         child: Column(
+        //           children: [
+        //             Text(
+        //               'Available Times',
+        //               style: bold(20),
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //     );
+        //   },
+        // );
+      },
+      child: SizedBox(
+        width: 100,
+        child: Card(
+          elevation: 2.5,
+          shape: RoundedRectangleBorder(
+            borderRadius: Dimensions.RadiusMedium.border,
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: 10, vertical: occupied ? 3 : 12),
+            child: Stack(
+              alignment: AlignmentDirectional.topEnd,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: occupied
+                          ? MainAxisAlignment.spaceEvenly
+                          : MainAxisAlignment.spaceBetween,
+                      verticalDirection: occupied
+                          ? VerticalDirection.down
+                          : VerticalDirection.up,
+                      children: [
+                        if (occupied) ...[
+                          SvgPicture.asset(
+                            Images.courseIcon,
+                            color: Colors.black,
+                            height: 25,
+                          ),
+                          const Icon(
+                            Icons.stop_circle_outlined,
+                            color: Colors.red,
+                          ),
+                        ],
+                        if (!occupied)
+                          const Icon(
+                            Icons.play_circle_outline_outlined,
+                            color: Colors.green,
+                          ),
                         SvgPicture.asset(
-                          Images.courseIcon,
+                          Images.roomIcon,
                           color: Colors.black,
-                          height: 25,
-                        ),
-                        const Icon(
-                          Icons.stop_circle_outlined,
-                          color: Colors.red,
+                          height: occupied ? null : 30,
                         ),
                       ],
-                      if (!occupied)
-                        const Icon(
-                          Icons.play_circle_outline_outlined,
-                          color: Colors.green,
-                        ),
-                      SvgPicture.asset(
-                        Images.roomIcon,
-                        color: Colors.black,
-                        height: occupied ? null : 30,
+                    ),
+                    15.w,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: occupied
+                            ? MainAxisAlignment.spaceEvenly
+                            : MainAxisAlignment.spaceBetween,
+                        verticalDirection: occupied
+                            ? VerticalDirection.down
+                            : VerticalDirection.up,
+                        children: [
+                          if (occupied)
+                            Text(
+                              room.course.code,
+                              style: bold(20).copyWith(),
+                            ),
+                          Text(
+                            occupied
+                                ? room.endTime.toTime
+                                : availableTimes(room),
+                            style: medium(18),
+                          ),
+                          Text(
+                            room.room,
+                            overflow: TextOverflow.ellipsis,
+                            style: occupied ? medium(18) : bold(20),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  15.w,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: occupied
-                        ? MainAxisAlignment.spaceEvenly
-                        : MainAxisAlignment.spaceBetween,
-                    verticalDirection: occupied
-                        ? VerticalDirection.down
-                        : VerticalDirection.up,
-                    children: [
-                      if (occupied)
-                        Text(
-                          room.course.code,
-                          style: bold(20).copyWith(),
-                        ),
-                      Text(
-                        occupied ? room.endTime.toTime : room.startTime.toTime,
-                        style: medium(18),
-                      ),
-                      Text(
-                        room.room,
-                        style: occupied ? medium(18) : bold(20),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              if (occupied)
-                Lottie.asset(
-                  Images.live,
-                  height: 30,
-                  width: 30,
+                    ),
+                  ],
                 ),
-            ],
+                if (occupied)
+                  Lottie.asset(
+                    Images.live,
+                    height: 30,
+                    width: 30,
+                  ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+String availableTimes(RoomStatusModel room) {
+  String end;
+  if (room.endTime == 0) {
+    end = '18:00';
+  } else {
+    end = room.startTime.toTime;
+  }
+  return 'Now - $end';
 }

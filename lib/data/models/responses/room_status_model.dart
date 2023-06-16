@@ -33,9 +33,10 @@ class RoomStatusModel {
   }
 
   factory RoomStatusModel.fromMap(Map<String, dynamic> map) {
+    String room = map['room'];
     return RoomStatusModel(
-      room: map['room'],
-      programme: map['programme'],
+      room: room.split('/').first,
+      programme: map['programme'] ,
       year: map['year'],
       course: CourseModel.fromMap(map['course']),
       startTime: map['start_time'],

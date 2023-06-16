@@ -6,6 +6,11 @@ class RoomRepo {
   final ApiClient apiClient;
   RoomRepo({required this.apiClient});
 
+  // FETCH ALL ROOMS
+  Future<Response> fetchAllRooms() async {
+    return await apiClient.getData(AppConstants.rooms);
+  }
+
   // LIVE ROOMS
   Future<Response> fetchLiveRooms(Map<String, dynamic> query) async {
     return await apiClient.getData(AppConstants.rooms + AppConstants.liveRooms,
