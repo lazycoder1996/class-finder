@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:timetable_app/data/models/responses/course_model.dart';
+import 'package:timetable_app/data/models/responses/room_model.dart';
 
 class RoomStatusModel {
-  final String room;
+  final RoomModel room;
   final String programme;
   final int year;
   final CourseModel course;
@@ -22,25 +23,24 @@ class RoomStatusModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'room': room,
+      'room': room.toMap(),
       'programme': programme,
       'year': year,
       'course': course.toMap(),
-      'start_time': startTime,
-      'endt_ime': endTime,
+      'start_time': startTime == 0 ? 800 : startTime,
+      'end_time': endTime == 0 ? 1800 : endTime,
       'status': status,
     };
   }
 
   factory RoomStatusModel.fromMap(Map<String, dynamic> map) {
-    String room = map['room'];
     return RoomStatusModel(
-      room: room.split('/').first,
-      programme: map['programme'] ,
+      room: RoomModel.fromMap(map['room']),
+      programme: map['programme'],
       year: map['year'],
       course: CourseModel.fromMap(map['course']),
-      startTime: map['start_time'],
-      endTime: map['end_time'],
+      startTime: map['start_time'] == 0 ? 800 : map['start_time'],
+      endTime: map['end_time'] == 0 ? 1800 : map['end_time'],
       status: map['status'],
     );
   }

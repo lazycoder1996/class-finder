@@ -1,18 +1,25 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:timetable_app/controllers/booking_controller.dart';
+import 'package:timetable_app/controllers/courses_controller.dart';
 import 'package:timetable_app/controllers/room_controller.dart';
 import 'package:timetable_app/controllers/timetime_controller.dart';
 import 'package:timetable_app/controllers/user_controller.dart';
+import 'package:timetable_app/data/models/responses/user_model.dart';
 import 'package:timetable_app/helpers/date_formatter.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
 import 'package:timetable_app/utils/images.dart';
+import 'package:timetable_app/utils/navigation.dart';
 import 'package:timetable_app/utils/user_formatter.dart';
 import 'package:timetable_app/views/base/custom_loader.dart';
-import 'package:timetable_app/views/screens/home/widget/card_widget.dart';
-import 'package:timetable_app/views/screens/home/widget/title_widget.dart';
+import 'package:timetable_app/views/screens/home/widgets/all_rooms.dart';
+import 'package:timetable_app/views/screens/home/widgets/card_widget.dart';
+import 'package:timetable_app/views/screens/home/widgets/title_widget.dart';
 
-import 'widget/upcoming_class.dart';
+import 'widgets/upcoming_class.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,11 +34,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    init();
+    init(true);
   }
 
-  init() async {
-    await Get.find<RoomController>().fetchAllRooms();
+  init(bool reload) async {
+    UserModel user = Get.find<UserController>().user!;
+    if (reload) {
+      await Get.find<RoomController>().fetchAllRooms();
+      await Get.find<CourseController>().getCourses({
+        'programme': user.programme,
+        'year': user.year,
+      });
+      await Get.find<BookingController>().getBookings({
+        'reference': user.reference,
+      });
+    }
     await Get.find<RoomController>().fetchLiveRooms({
       'time': DateFormatter.hhmm(),
       'day': DateFormatter.dayFromTime(),
@@ -42,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     await Get.find<TimetableController>().getTimetable(
       {
-        'programme': Get.find<UserController>().user!.programme,
-        'year': Get.find<UserController>().user!.year,
+        'programme':user.programme,
+        'year': user.year,
         'day': DateFormatter.dayFromTime().toLowerCase()
       },
     );
@@ -51,7 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    init();
+    // init();
+    Timer.periodic(const Duration(minutes: 2), (t) async {
+      init(false);
+    });
     String greeting = '';
     int hour = DateTime.now().hour;
     if (hour >= 0 && hour < 12) {
@@ -128,7 +148,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     TitleWidget(
                       title: 'Ongoing Sessions',
-                      onPressed: () {},
+                      onPressed: () {
+                        toScreen(
+                          context,
+                          AllRoomScreen(
+                            title: 'Ongonig Sessions',
+                            rooms: roomController.liveRooms!,
+                          ),
+                        );
+                      },
                     ),
                     roomController.liveRooms != null
                         ? roomController.liveRooms!.isNotEmpty
@@ -152,15 +180,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                 })
                             : Center(
                                 child: Text(
-                                'No data found',
-                                style: bold(18),
-                              ))
+                                  'No data found',
+                                  style: bold(18),
+                                ),
+                              )
                         : const Center(
                             child: CustomLoader(),
                           ),
                     TitleWidget(
                       title: 'Available Now',
-                      onPressed: () {},
+                      onPressed: () {
+                        toScreen(
+                          context,
+                          AllRoomScreen(
+                            title: 'Available Now',
+                            rooms: roomController.emptyRooms!,
+                          ),
+                        );
+                      },
                     ),
                     roomController.emptyRooms != null
                         ? roomController.emptyRooms!.isNotEmpty

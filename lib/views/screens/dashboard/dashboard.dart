@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:timetable_app/controllers/auth_controller.dart';
+import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
 import 'package:timetable_app/utils/images.dart';
 import 'package:timetable_app/utils/navigation.dart';
@@ -9,6 +10,8 @@ import 'package:timetable_app/views/screens/auth/login.dart';
 import 'package:timetable_app/views/screens/booking/booking_screen.dart';
 import 'package:timetable_app/views/screens/home/home_screen.dart';
 import 'package:timetable_app/views/screens/profile/profile_screen.dart';
+
+import 'all_rooms.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -40,9 +43,19 @@ class _DashboardState extends State<Dashboard> {
             : FloatingActionButton(
                 onPressed: () async {
                   if (currentIndex == 1) {
+                    showModalBottomSheet(
+                        backgroundColor: Colors.transparent,
+                        context: context,
+                        builder: (context) {
+                          return const AllRooms();
+                        });
+                    // toScreen(context, const AddBooking());
                   } else {
-                    await Get.find<AuthController>().logout().then((value) {
-                      replaceScreen(context, const LoginScreen());
+                    replaceScreen(context, const LoginScreen());
+                    Future.delayed(const Duration(seconds: 1), () async {
+                      await Get.find<AuthController>()
+                          .logout()
+                          .then((value) {});
                     });
                   }
                 },

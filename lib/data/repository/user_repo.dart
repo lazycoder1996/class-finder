@@ -10,7 +10,7 @@ class UserRepo {
 
   // get user
   Future<Response> getUser() async {
-    String reference = sharedPreferences.getString(AppConstants.userReference) ?? '9273217';
+    int reference = sharedPreferences.getInt(AppConstants.userReference) ?? 9273217;
     return await apiClient.getData('${AppConstants.users}/$reference');
   }
 }

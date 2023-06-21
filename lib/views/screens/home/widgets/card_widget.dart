@@ -5,6 +5,8 @@ import 'package:timetable_app/data/models/responses/room_status_model.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
 import 'package:timetable_app/utils/images.dart';
+import 'package:timetable_app/utils/navigation.dart';
+import 'package:timetable_app/views/screens/booking/widgets/add_booking.dart';
 
 class RoomItem extends StatelessWidget {
   final bool occupied;
@@ -18,37 +20,46 @@ class RoomItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        // showModalBottomSheet(
-        //   shape: const RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.vertical(
-        //       top: Radius.circular(25),
-        //     ),
-        //   ),
-        //   context: context,
-        //   builder: (context) {
-        //     return Card(
-        //       margin: EdgeInsets.zero,
-        //       shape: const RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.vertical(
-        //           top: Radius.circular(25),
-        //         ),
-        //       ),
-        //       child: Padding(
-        //         padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
-        //         child: Column(
-        //           children: [
-        //             Text(
-        //               'Available Times',
-        //               style: bold(20),
-        //             ),
-        //           ],
-        //         ),
-        //       ),
-        //     );
-        //   },
-        // );
-      },
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onTap: occupied
+          ? null
+          : () {
+              toScreen(
+                  context,
+                  AddBooking(
+                    room: room.room.name,
+                  ));
+              // showModalBottomSheet(
+              //   shape: const RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.vertical(
+              //       top: Radius.circular(25),
+              //     ),
+              //   ),
+              //   context: context,
+              //   builder: (context) {
+              //     return Card(
+              //       margin: EdgeInsets.zero,
+              //       shape: const RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.vertical(
+              //           top: Radius.circular(25),
+              //         ),
+              //       ),
+              //       child: Padding(
+              //         padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
+              //         child: Column(
+              //           children: [
+              //             Text(
+              //               'Available Times',
+              //               style: bold(20),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     );
+              //   },
+              // );
+            },
       child: SizedBox(
         width: 100,
         child: Card(
@@ -119,7 +130,7 @@ class RoomItem extends StatelessWidget {
                             style: medium(18),
                           ),
                           Text(
-                            room.room,
+                            room.room.name,
                             overflow: TextOverflow.ellipsis,
                             style: occupied ? medium(18) : bold(20),
                           ),
@@ -144,11 +155,10 @@ class RoomItem extends StatelessWidget {
 }
 
 String availableTimes(RoomStatusModel room) {
-  String end;
-  if (room.endTime == 0) {
-    end = '18:00';
-  } else {
-    end = room.startTime.toTime;
+  dynamic start = room.startTime;
+  int end = room.endTime;
+  if (start == 800) {
+    start = 'Now';
   }
-  return 'Now - $end';
+  return '$start - ${end.toTime}';
 }

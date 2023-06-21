@@ -8,3 +8,7 @@ replaceScreen(BuildContext context, page) {
   Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => page), (route) => false);
 }
+
+pop(BuildContext context) {
+  Navigator.of(context).pop();
+}

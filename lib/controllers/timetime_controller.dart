@@ -11,6 +11,8 @@ class TimetableController extends GetxController implements GetxService {
   List<TimetableModel>? _timeTable;
   List<TimetableModel>? get timeTable => _timeTable;
 
+  bool _noClass = false;
+  bool get noClass => _noClass;
   // GET TIMETABLE
   Future<void> getTimetable(Map<String, dynamic> query) async {
     Response response = await timetableRepo.getTimetable(query);
@@ -30,7 +32,10 @@ class TimetableController extends GetxController implements GetxService {
       ).toList();
 
       if (upComing.isNotEmpty) {
+        _noClass = false;
         getUpcomingClass(upComing);
+      } else {
+        _noClass = true;
       }
     } else {}
     update();

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class UserModel {
-  final String reference;
+  final int reference;
   final String firstName;
   final String? middleName;
   final String surname;

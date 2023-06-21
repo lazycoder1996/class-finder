@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/utils/app_colors.dart';
 
+import '../helpers/font_styles.dart';
+
 ThemeData lightTheme({Color color = const Color.fromRGBO(171, 7, 27, 1)}) =>
     ThemeData(
       fontFamily: 'Quicksand',
       primaryColor: color,
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         elevation: 0,
         backgroundColor: Colors.white,
+        foregroundColor: color,
+        titleTextStyle: bold(20).copyWith(color: color),
       ),
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
       secondaryHeaderColor: AppColors.secondary,
       brightness: Brightness.light,
       progressIndicatorTheme: ProgressIndicatorThemeData(

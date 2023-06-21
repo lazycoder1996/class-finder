@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:timetable_app/data/models/responses/course_model.dart';
+import 'package:timetable_app/data/models/responses/room_model.dart';
 
 class TimetableModel {
   final CourseModel course;
   final int startTime;
   final int endTime;
   final String day;
-  final String room;
+  final RoomModel room;
   bool _ongoing = false;
 
   TimetableModel({
@@ -24,7 +25,7 @@ class TimetableModel {
       'startTime': startTime,
       'endTime': endTime,
       'day': day,
-      'room': room,
+      'room': room.toMap(),
     };
   }
 
@@ -37,7 +38,7 @@ class TimetableModel {
       startTime: map['start_time'],
       endTime: map['end_time'],
       day: map['day'],
-      room: map['room'],
+      room: RoomModel.fromMap(map['room']),
     );
   }
 

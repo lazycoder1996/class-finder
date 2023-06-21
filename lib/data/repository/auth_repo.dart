@@ -16,9 +16,9 @@ class AuthRepo {
   }
 
   // keep user alive
-  Future<void> updateToken(bool value, String ref) async {
+  Future<void> updateToken(bool value, int ref) async {
     await sharedPreferences.setBool(AppConstants.loggedIn, value);
-    await sharedPreferences.setString(AppConstants.userReference,ref);
+    await sharedPreferences.setInt(AppConstants.userReference,ref);
   }
 
   bool loggedIn() {

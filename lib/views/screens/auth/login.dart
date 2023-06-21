@@ -107,6 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   fillColor: AppColors.secondary,
                                   filled: true,
                                   hintStyle: hintStyle,
+                                  textInputType: TextInputType.number,
                                   prefixIcon: const Icon(
                                     Icons.numbers,
                                   ),
@@ -194,8 +195,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String error = "";
 
   Future<void> login(AuthController authController) async {
-    LoginBody body =
-        LoginBody(reference: refId.text.trim(), password: password.text.trim());
+    LoginBody body = LoginBody(
+        reference: int.parse(refId.text.trim()),
+        password: password.text.trim());
     await authController.login(body).then((status) async {
       if (status.isSuccess) {
         showCustomSnackBar(status.message, isError: !status.isSuccess);

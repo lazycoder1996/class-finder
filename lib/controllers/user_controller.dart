@@ -23,7 +23,6 @@ class UserController extends GetxController implements GetxService {
     Response response = await userRepo.getUser();
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, "");
-      print(response.body);
       _user = UserModel.fromMap(response.body['user']);
     } else {
       responseModel = ResponseModel(false, response.body ?? 'error');

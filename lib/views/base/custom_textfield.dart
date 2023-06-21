@@ -14,6 +14,7 @@ class CustomTextField extends StatelessWidget {
   final TextStyle? labelStyle;
   final TextStyle? hintStyle;
   final bool obscureText;
+  final TextInputType? textInputType;
   const CustomTextField({
     super.key,
     required this.controller,
@@ -27,6 +28,7 @@ class CustomTextField extends StatelessWidget {
     this.borderSide,
     this.labelStyle,
     this.obscureText = false,
+    this.textInputType,
     this.hintStyle,
   });
 
@@ -36,6 +38,7 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       validator: validator,
       obscuringCharacter: '*',
+      keyboardType: textInputType,
       style: semiBold(16),
       obscureText: obscureText,
       decoration: InputDecoration(

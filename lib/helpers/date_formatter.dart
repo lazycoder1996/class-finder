@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 class DateFormatter {
   static String dayFromTime([DateTime? day]) {
-    return DateFormat().add_EEEE().format(day ?? DateTime.now());
+    return DateFormat().add_EEEE().format(day ?? DateTime.now()).toLowerCase();
   }
 
   static int hhmm([DateTime? day]) {

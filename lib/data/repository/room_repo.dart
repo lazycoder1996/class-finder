@@ -22,4 +22,11 @@ class RoomRepo {
     return await apiClient
         .getData(AppConstants.rooms + AppConstants.vacantRooms, query: query);
   }
+
+  // ROOM'S AVAILABLE TIMINGS
+  Future<Response> getRoomAvailableTimes(Map<String, dynamic> query) async {
+    return await apiClient.getData(
+        AppConstants.rooms + AppConstants.availableTimes,
+        query: query);
+  }
 }
