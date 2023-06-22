@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
 import 'package:timetable_app/utils/app_colors.dart';
+import 'package:timetable_app/utils/navigation.dart';
 import 'package:timetable_app/utils/user_formatter.dart';
+import 'package:timetable_app/views/screens/profile/timetable_screen.dart';
 
 import '../../../controllers/user_controller.dart';
 import '../../../utils/images.dart';
@@ -58,6 +60,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: AppColors.secondary,
                 child: Column(
                   children: [
+                    ListTile(
+                      onTap: () {
+                        toScreen(context, const TimetableScreen());
+                      },
+                      leading: const Icon(Icons.calendar_month_rounded),
+                      title: Text(
+                        'View Timetable',
+                        style: medium(18),
+                      ),
+                    ),
+                    const Divider(
+                      color: Colors.white,
+                      thickness: 1.5,
+                    ),
                     SwitchListTile.adaptive(
                         title: Text('Schedule Notification', style: medium(18)),
                         value: scheduledNotif,

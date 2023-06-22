@@ -14,6 +14,9 @@ class TimetableController extends GetxController implements GetxService {
   bool _noClass = false;
   bool get noClass => _noClass;
   // GET TIMETABLE
+  List<TimetableModel>? _todayTable;
+  List<TimetableModel>? get todayTable => _todayTable;
+
   Future<void> getTimetable(Map<String, dynamic> query) async {
     Response response = await timetableRepo.getTimetable(query);
     if (response.statusCode == 200) {
@@ -23,7 +26,12 @@ class TimetableController extends GetxController implements GetxService {
         body.length,
         (index) => TimetableModel.fromMap(body[index]),
       );
-      List<TimetableModel> upComing = _timeTable!.where(
+      _todayTable = _timeTable!
+          .where((element) =>
+              element.day.toLowerCase() ==
+              DateFormatter.dayFromTime().toLowerCase())
+          .toList();
+      List<TimetableModel> upComing = _todayTable!.where(
         (element) {
           return element.day.toLowerCase() ==
                   DateFormatter.dayFromTime().toLowerCase() &&

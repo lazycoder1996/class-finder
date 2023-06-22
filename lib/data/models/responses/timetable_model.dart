@@ -9,6 +9,7 @@ class TimetableModel {
   final int endTime;
   final String day;
   final RoomModel room;
+  final bool recursive;
   bool _ongoing = false;
 
   TimetableModel({
@@ -17,6 +18,7 @@ class TimetableModel {
     required this.endTime,
     required this.day,
     required this.room,
+    required this.recursive,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,6 +28,7 @@ class TimetableModel {
       'endTime': endTime,
       'day': day,
       'room': room.toMap(),
+      'recursive': recursive,
     };
   }
 
@@ -39,6 +42,7 @@ class TimetableModel {
       endTime: map['end_time'],
       day: map['day'],
       room: RoomModel.fromMap(map['room']),
+      recursive: map['recursive'],
     );
   }
 

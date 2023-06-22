@@ -55,7 +55,7 @@ class BookingWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      '${booking.course.code} 0${booking.course.name}',
+                      '${booking.course.code} ${booking.course.name}',
                       overflow: TextOverflow.ellipsis,
                       style: bold(18),
                     ),

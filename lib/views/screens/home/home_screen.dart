@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       {
         'programme':user.programme,
         'year': user.year,
-        'day': DateFormatter.dayFromTime().toLowerCase()
+        // 'day': DateFormatter.dayFromTime().toLowerCase()
       },
     );
   }
