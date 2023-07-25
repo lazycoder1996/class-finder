@@ -44,7 +44,7 @@ dependencies:
   intl: ^0.18.1
   loading_animation_widget: ^1.2.0+4
   shimmer: ^3.0.0
-  flutter_slidable: ^3.0.0
+  flutter_slidable: 
 
 dev_dependencies:
   flutter_test:

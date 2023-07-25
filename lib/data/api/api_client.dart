@@ -64,7 +64,7 @@ class ApiClient extends GetxService {
 
   Future<Response> putData(
     String uri,
-    dynamic body,
+    Map<String, dynamic> body,
   ) async {
     try {
       if (Foundation.kDebugMode) {

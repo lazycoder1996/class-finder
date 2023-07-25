@@ -12,11 +12,12 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color = Color.fromRGBO(timetableModel.startTime - 60,
-        timetableModel.endTime - 100, timetableModel.hashCode + 50, 1);
+    // Color color = Color.fromRGBO(timetableModel.startTime - 60,
+    //     timetableModel.endTime - 100, timetableModel.hashCode + 50, 1);
+    Color color = Theme.of(context).primaryColor;
     return SizedBox(
       height: 100,
-      width: 100,
+      width: double.maxFinite,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),

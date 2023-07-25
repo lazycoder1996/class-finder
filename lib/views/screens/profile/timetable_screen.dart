@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:timetable_app/controllers/schedule_controller.dart';
 import 'package:timetable_app/controllers/timetime_controller.dart';
+import 'package:timetable_app/controllers/user_controller.dart';
+import 'package:timetable_app/data/models/body/update_schedule_body.dart';
 import 'package:timetable_app/data/models/responses/timetable_model.dart';
+import 'package:timetable_app/data/models/responses/user_model.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
+import 'package:timetable_app/utils/navigation.dart';
+import 'package:timetable_app/views/base/custom_snackbar.dart';
 import 'package:timetable_app/views/screens/profile/course.dart';
+
+import '../../../utils/app_colors.dart';
 
 class TimetableScreen extends StatefulWidget {
   const TimetableScreen({super.key});
@@ -24,7 +33,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
       ),
       body: GetBuilder<TimetableController>(
         builder: (tController) {
-          print(tController.timeTable!.first.toMap());
+          // print(tController.timeTable!.first.toMap());
           return SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Column(
@@ -70,7 +79,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 20.h,
                 GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                    crossAxisCount: 1,
                     mainAxisExtent: 120,
                     mainAxisSpacing: 5,
                   ),
@@ -79,17 +88,94 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   itemCount: tController.timeTable!
                       .where((element) =>
                           element.day.toLowerCase() ==
-                          selectedDay.toLowerCase() && element.recursive)
+                              selectedDay.toLowerCase() &&
+                          element.recursive)
                       .length,
                   itemBuilder: (context, index) {
                     List<TimetableModel> timetableModel = tController.timeTable!
                         .where((element) =>
                             element.day.toLowerCase() ==
-                            selectedDay.toLowerCase() && element.recursive)
+                                selectedDay.toLowerCase() &&
+                            element.recursive)
                         .toList();
                     timetableModel
                         .sort((a, b) => a.startTime.compareTo(b.startTime));
-                    return CourseCard(timetableModel: timetableModel[index]);
+                    TimetableModel timetable = timetableModel[index];
+                    return Slidable(
+                      startActionPane: ActionPane(
+                        extentRatio: 0.2,
+                        motion: const ScrollMotion(),
+                        children: [
+                          SlidableAction(
+                            // borderRadius: BorderRadius.circular(15),
+                            padding: EdgeInsets.zero,
+                            onPressed: (context) async {
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: 16.border,
+                                    ),
+                                    title: const Text('Cancel Class'),
+                                    content: Get.find<ScheduleController>()
+                                            .cancelling
+                                        ? const Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : const Text(
+                                            'Are you sure you want to cancel this week\'s class?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        style: TextButton.styleFrom(
+                                          backgroundColor:
+                                              Theme.of(context).primaryColor,
+                                          foregroundColor: Colors.white,
+                                        ),
+                                        child: const Text('Yes'),
+                                        onPressed: () async {
+                                          UserModel user =
+                                              Get.find<UserController>().user!;
+                                          UpdateScheduleBody body =
+                                              UpdateScheduleBody(
+                                                  programme: user.programme,
+                                                  day: timetable.day,
+                                                  roomName: timetable.room.name,
+                                                  startTime:
+                                                      timetable.startTime,
+                                                  endTime: timetable.endTime,
+                                                  year: user.year);
+                                          await Get.find<ScheduleController>()
+                                              .cancelClass(body)
+                                              .then((value) {
+                                            showCustomSnackBar(value.message,
+                                                isError: !value.isSuccess);
+                                            pop(context);
+                                          });
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('No'),
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(); // Dismiss alert dialog
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            foregroundColor: AppColors.red,
+                            backgroundColor: Colors.white,
+                            icon: Icons.cancel_presentation,
+                            label: 'Cancel',
+                          ),
+                        ],
+                      ),
+                      child: CourseCard(timetableModel: timetable),
+                    );
                   },
                 )
                 // Padding(

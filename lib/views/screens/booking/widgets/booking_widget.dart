@@ -42,15 +42,22 @@ class _BookingWidgetState extends State<BookingWidget> {
                 // false = user must tap button, true = tap outside dialog
                 builder: (BuildContext dialogContext) {
                   return AlertDialog(
-                    title: Text('delete'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: 16.border,
+                    ),
+                    title: const Text('Delete'),
                     content: widget.controller.deleting
                         ? const Center(
                             child: CircularProgressIndicator(),
                           )
-                        : Text('Would you want to delete this card?'),
+                        : const Text('Would you want to delete this booking?'),
                     actions: <Widget>[
                       TextButton(
-                        child: Text('Yes'),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Yes'),
                         onPressed: () async {
                           await widget.controller
                               .deleteBooking(widget.booking.id)
@@ -62,7 +69,7 @@ class _BookingWidgetState extends State<BookingWidget> {
                         },
                       ),
                       TextButton(
-                        child: Text('No'),
+                        child: const Text('No'),
                         onPressed: () {
                           Navigator.of(dialogContext)
                               .pop(); // Dismiss alert dialog
@@ -80,19 +87,19 @@ class _BookingWidgetState extends State<BookingWidget> {
           ),
         ],
       ),
-      endActionPane: ActionPane(
-        extentRatio: 0.2,
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (context) {},
-            backgroundColor: Colors.white,
-            foregroundColor: AppColors.red,
-            icon: Icons.edit,
-            label: 'Edit',
-          ),
-        ],
-      ),
+      // endActionPane: ActionPane(
+      //   extentRatio: 0.2,
+      //   motion: const ScrollMotion(),
+      //   children: [
+      //     SlidableAction(
+      //       onPressed: (context) {},
+      //       backgroundColor: Colors.white,
+      //       foregroundColor: AppColors.red,
+      //       icon: Icons.edit,
+      //       label: 'Edit',
+      //     ),
+      //   ],
+      // ),
       key: Key(widget.booking.id.toString()),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

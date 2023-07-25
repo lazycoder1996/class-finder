@@ -8,7 +8,6 @@ import 'package:timetable_app/utils/user_formatter.dart';
 import 'package:timetable_app/views/screens/profile/timetable_screen.dart';
 
 import '../../../controllers/user_controller.dart';
-import '../../../utils/images.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -34,7 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(child: Image.asset(Images.biggerProfilePicture)),
+                    // Expanded(child: Image.asset(Images.biggerProfilePicture)),
                     15.h,
                     Text(
                       userFullname(userController.user!),

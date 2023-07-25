@@ -4,6 +4,7 @@ import 'package:timetable_app/controllers/auth_controller.dart';
 import 'package:timetable_app/controllers/booking_controller.dart';
 import 'package:timetable_app/controllers/courses_controller.dart';
 import 'package:timetable_app/controllers/room_controller.dart';
+import 'package:timetable_app/controllers/schedule_controller.dart';
 import 'package:timetable_app/controllers/timetime_controller.dart';
 import 'package:timetable_app/controllers/user_controller.dart';
 import 'package:timetable_app/data/api/api_client.dart';
@@ -11,6 +12,7 @@ import 'package:timetable_app/data/repository/auth_repo.dart';
 import 'package:timetable_app/data/repository/booking_repo.dart';
 import 'package:timetable_app/data/repository/course_repo.dart';
 import 'package:timetable_app/data/repository/room_repo.dart';
+import 'package:timetable_app/data/repository/schedule_repo.dart';
 import 'package:timetable_app/data/repository/timetable_repo.dart';
 import 'package:timetable_app/data/repository/user_repo.dart';
 import 'package:timetable_app/utils/app_constants.dart';
@@ -36,6 +38,8 @@ Future<void> init() async {
       CourseRepo( apiClient: Get.find()));
   Get.lazyPut(() =>
       BookingRepo( apiClient: Get.find()));
+  Get.lazyPut(() =>
+      ScheduleRepo( apiClient: Get.find()));
 
   // CONTROLLERS
   Get.lazyPut(() => AuthController(Get.find()));
@@ -44,4 +48,5 @@ Future<void> init() async {
   Get.lazyPut(() => TimetableController(Get.find()));
   Get.lazyPut(() => CourseController(Get.find()));
   Get.lazyPut(() => BookingController(Get.find()));
+  Get.lazyPut(() => ScheduleController(Get.find()));
 }
