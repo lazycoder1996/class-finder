@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController password = TextEditingController();
   bool obscurePassword = true;
   GlobalKey<FormState> key = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -196,8 +197,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> login(AuthController authController) async {
     LoginBody body = LoginBody(
-        reference: int.parse(refId.text.trim()),
-        password: password.text.trim());
+      reference: int.parse(refId.text.trim()),
+      password: password.text.trim(),
+    );
     await authController.login(body).then((status) async {
       if (status.isSuccess) {
         showCustomSnackBar(status.message, isError: !status.isSuccess);

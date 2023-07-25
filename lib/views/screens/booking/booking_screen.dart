@@ -35,7 +35,7 @@ class _BookingScreenState extends State<BookingScreen> {
           itemCount: bookController.bookings!.length,
           itemBuilder: (context, index) {
             BookingModel booking = bookController.bookings![index];
-            return BookingWidget(booking: booking);
+            return BookingWidget(booking: booking, controller: bookController);
           },
         );
       }
