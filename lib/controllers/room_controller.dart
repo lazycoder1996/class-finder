@@ -111,9 +111,8 @@ class RoomController extends GetxController implements GetxService {
 
 // CRAZY FUNCTION TO RETURN AVAILABLE TIMES
 List<TimeRange> timings(List<List<String>> busyTimes) {
-  print(busyTimes);
   if (busyTimes.isEmpty) {
-    return [TimeRange(Time(0, 0), Time(18, 0))];
+    return [TimeRange(Time(8, 0), Time(18, 0))];
   }
   TimeRange.timeRanges.clear();
   for (var i in busyTimes) {

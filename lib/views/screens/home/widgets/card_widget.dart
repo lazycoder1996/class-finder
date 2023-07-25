@@ -155,9 +155,9 @@ class RoomItem extends StatelessWidget {
 }
 
 String availableTimes(RoomStatusModel room) {
-  dynamic start = room.startTime;
+  dynamic start = room.startTime.toTime;
   int end = room.endTime;
-  if (start == 800) {
+  if (start == "08:00") {
     start = 'Now';
   }
   return '$start - ${end.toTime}';

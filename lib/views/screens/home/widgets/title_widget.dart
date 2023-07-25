@@ -5,11 +5,13 @@ class TitleWidget extends StatelessWidget {
   final String title;
   final Widget? child;
   final void Function() onPressed;
+  final bool showViewAll;
   const TitleWidget({
     super.key,
     required this.title,
     this.child,
     required this.onPressed,
+    this.showViewAll = true,
   });
 
   @override
@@ -26,10 +28,11 @@ class TitleWidget extends StatelessWidget {
                 ),
               ),
           const Spacer(),
-          TextButton(
-            onPressed: onPressed,
-            child: const Text('View all'),
-          ),
+          if (showViewAll)
+            TextButton(
+              onPressed: onPressed,
+              child: const Text('View all'),
+            ),
         ],
       ),
     );
