@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
 import 'package:timetable_app/controllers/booking_controller.dart';
 import 'package:timetable_app/data/models/responses/booking_model.dart';
 import 'package:timetable_app/helpers/extensions.dart';
@@ -41,41 +42,8 @@ class _BookingWidgetState extends State<BookingWidget> {
 
                 // false = user must tap button, true = tap outside dialog
                 builder: (BuildContext dialogContext) {
-                  return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: 16.border,
-                    ),
-                    title: const Text('Delete'),
-                    content: widget.controller.deleting
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : const Text('Would you want to delete this booking?'),
-                    actions: <Widget>[
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          foregroundColor: Colors.white,
-                        ),
-                        child: const Text('Yes'),
-                        onPressed: () async {
-                          await widget.controller
-                              .deleteBooking(widget.booking.id)
-                              .then((status) {
-                            showCustomSnackBar(status.message,
-                                isError: !status.isSuccess);
-                            pop(dialogContext);
-                          });
-                        },
-                      ),
-                      TextButton(
-                        child: const Text('No'),
-                        onPressed: () {
-                          Navigator.of(dialogContext)
-                              .pop(); // Dismiss alert dialog
-                        },
-                      ),
-                    ],
+                  return DeleteBookingAlert(
+                    bookingId: widget.booking.id,
                   );
                 },
               );
@@ -164,5 +132,54 @@ class _BookingWidgetState extends State<BookingWidget> {
         ),
       ),
     );
+  }
+}
+
+class DeleteBookingAlert extends StatelessWidget {
+  final int bookingId;
+  const DeleteBookingAlert({
+    Key? key,
+    required this.bookingId,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<BookingController>(builder: (controller) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: 16.border,
+        ),
+        title: const Text('Delete'),
+        content: controller.deleting
+            ? const SizedBox(
+                height: 40,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : const Text('Would you want to delete this booking?'),
+        actions: <Widget>[
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Yes'),
+            onPressed: () async {
+              await controller.deleteBooking(bookingId).then((status) {
+                showCustomSnackBar(status.message, isError: !status.isSuccess);
+                pop(context);
+              });
+            },
+          ),
+          TextButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop(); // Dismiss alert dialog
+            },
+          ),
+        ],
+      );
+    });
   }
 }

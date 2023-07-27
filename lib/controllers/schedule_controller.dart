@@ -18,7 +18,7 @@ class ScheduleController extends GetxController implements GetxService {
     ResponseModel responseModel;
     Response response = await scheduleRepo.updateSchedule(updateBody);
     if (response.statusCode == 200) {
-      responseModel = ResponseModel(true, 'Classed cancelled succesfully');
+      responseModel = ResponseModel(true, 'Classe cancelled succesfully');
     } else {
       print('error occured');
       responseModel = ResponseModel(false, 'Error cancelling class');

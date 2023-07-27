@@ -22,6 +22,7 @@ ThemeData lightTheme({Color color = const Color.fromRGBO(171, 7, 27, 1)}) =>
         color: color,
       ),
       cardColor: Colors.white,
+      
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.red,
@@ -36,4 +37,5 @@ ThemeData lightTheme({Color color = const Color.fromRGBO(171, 7, 27, 1)}) =>
           foregroundColor: AppColors.red,
         ),
       ),
+      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: color),
     );

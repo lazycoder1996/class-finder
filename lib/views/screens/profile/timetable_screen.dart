@@ -77,12 +77,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   }).toList(),
                 ),
                 20.h,
-                GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    mainAxisExtent: 120,
-                    mainAxisSpacing: 5,
-                  ),
+                ListView.builder(
+                  // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  //   crossAxisCount: 1,
+                  //   mainAxisExtent: 120,
+                  //   mainAxisSpacing: 5,
+                  // ),
                   shrinkWrap: true,
                   primary: false,
                   itemCount: tController.timeTable!
@@ -114,56 +114,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
                                 context: context,
                                 barrierDismissible: true,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: 16.border,
-                                    ),
-                                    title: const Text('Cancel Class'),
-                                    content: Get.find<ScheduleController>()
-                                            .cancelling
-                                        ? const Center(
-                                            child: CircularProgressIndicator(),
-                                          )
-                                        : const Text(
-                                            'Are you sure you want to cancel this week\'s class?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          backgroundColor:
-                                              Theme.of(context).primaryColor,
-                                          foregroundColor: Colors.white,
-                                        ),
-                                        child: const Text('Yes'),
-                                        onPressed: () async {
-                                          UserModel user =
-                                              Get.find<UserController>().user!;
-                                          UpdateScheduleBody body =
-                                              UpdateScheduleBody(
-                                                  programme: user.programme,
-                                                  day: timetable.day,
-                                                  roomName: timetable.room.name,
-                                                  startTime:
-                                                      timetable.startTime,
-                                                  endTime: timetable.endTime,
-                                                  year: user.year);
-                                          await Get.find<ScheduleController>()
-                                              .cancelClass(body)
-                                              .then((value) {
-                                            showCustomSnackBar(value.message,
-                                                isError: !value.isSuccess);
-                                            pop(context);
-                                          });
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: const Text('No'),
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .pop(); // Dismiss alert dialog
-                                        },
-                                      ),
-                                    ],
-                                  );
+                                  return CancelClassWidget(
+                                      timetable: timetable);
                                 },
                               );
                             },
@@ -225,5 +177,64 @@ class _TimetableScreenState extends State<TimetableScreen> {
         },
       ),
     );
+  }
+}
+
+class CancelClassWidget extends StatelessWidget {
+  const CancelClassWidget({
+    Key? key,
+    required this.timetable,
+  }) : super(key: key);
+
+  final TimetableModel timetable;
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<ScheduleController>(builder: (scheduleController) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: 16.border,
+        ),
+        title: const Text('Cancel Class'),
+        content: scheduleController.cancelling
+            ? const SizedBox(
+                height: 40,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : const Text('Are you sure you want to cancel this week\'s class?'),
+        actions: <Widget>[
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Yes'),
+            onPressed: () async {
+              UserModel user = Get.find<UserController>().user!;
+              UpdateScheduleBody body = UpdateScheduleBody(
+                programme: user.programme,
+                day: timetable.day,
+                roomName: timetable.room.name,
+                startTime: timetable.startTime,
+                endTime: timetable.endTime,
+                year: user.year,
+              );
+              await scheduleController.cancelClass(body).then((value) {
+                showCustomSnackBar(value.message, isError: !value.isSuccess);
+                pop(context);
+              });
+            },
+          ),
+          TextButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop(); // Dismiss alert dialog
+            },
+          ),
+        ],
+      );
+    });
   }
 }
