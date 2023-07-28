@@ -35,7 +35,7 @@ class TimetableController extends GetxController implements GetxService {
         (element) {
           return element.day.toLowerCase() ==
                   DateFormatter.dayFromTime().toLowerCase() &&
-              !(element.endTime < DateFormatter.hhmm());
+              !(element.endTime < DateFormatter.hhmm()) && element.status;
         },
       ).toList();
 
