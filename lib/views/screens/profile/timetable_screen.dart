@@ -24,6 +24,13 @@ class TimetableScreen extends StatefulWidget {
 
 class _TimetableScreenState extends State<TimetableScreen> {
   String selectedDay = 'Monday';
+  late UserModel user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = Get.find<UserController>().user!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,30 +109,32 @@ class _TimetableScreenState extends State<TimetableScreen> {
                         .sort((a, b) => a.startTime.compareTo(b.startTime));
                     TimetableModel timetable = timetableModel[index];
                     return Slidable(
-                      startActionPane: ActionPane(
-                        extentRatio: 0.2,
-                        motion: const ScrollMotion(),
-                        children: [
-                          SlidableAction(
-                            // borderRadius: BorderRadius.circular(15),
-                            padding: EdgeInsets.zero,
-                            onPressed: (context) async {
-                              showDialog<void>(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return CancelClassWidget(
-                                      timetable: timetable);
-                                },
-                              );
-                            },
-                            foregroundColor: AppColors.red,
-                            backgroundColor: Colors.white,
-                            icon: Icons.cancel_presentation,
-                            label: 'Cancel',
-                          ),
-                        ],
-                      ),
+                      startActionPane: user.role == 0
+                          ? null
+                          : ActionPane(
+                              extentRatio: 0.2,
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  // borderRadius: BorderRadius.circular(15),
+                                  padding: EdgeInsets.zero,
+                                  onPressed: (context) async {
+                                    showDialog<void>(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      builder: (BuildContext context) {
+                                        return CancelClassWidget(
+                                            timetable: timetable);
+                                      },
+                                    );
+                                  },
+                                  foregroundColor: AppColors.red,
+                                  backgroundColor: Colors.white,
+                                  icon: Icons.cancel_presentation,
+                                  label: 'Cancel',
+                                ),
+                              ],
+                            ),
                       child: CourseCard(timetableModel: timetable),
                     );
                   },

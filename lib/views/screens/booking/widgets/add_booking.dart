@@ -37,6 +37,7 @@ class _AddBookingState extends State<AddBooking> {
   TimeRange selectedRange = TimeRange(Time(0, 0), Time(0, 0));
   late List<CourseModel> courses;
   late CourseModel selectedCourse;
+  late UserModel? user;
   Time? startTime;
   Time? endTime;
   Time? duration;
@@ -51,6 +52,7 @@ class _AddBookingState extends State<AddBooking> {
 
   init() async {
     RoomController rc = Get.find<RoomController>();
+    user = Get.find<UserController>().user;
     await rc.getRoomAvailableTimes({
       'day': DateFormatter.dayFromTime(selectedDay).toLowerCase(),
       'room': widget.room,
@@ -81,95 +83,98 @@ class _AddBookingState extends State<AddBooking> {
     return GetBuilder<RoomController>(builder: (roomController) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Add Booking'),
+          title: Text(user!.role == 0 ? 'Available Times' : 'Add Booking'),
         ),
-        bottomNavigationBar: roomController.availableTimes != null &&
-                roomController.availableTimes!.isEmpty
-            ? Container(
-                color: AppColors.red,
-                height: 62,
-                alignment: Alignment.center,
-                child: Text(
-                  'Room is busy all day',
-                  style: bold(24).copyWith(color: Colors.white),
-                ),
-              )
-            : GetBuilder<BookingController>(builder: (bookingController) {
-                return InkWell(
-                  onTap: () async {
-                    if (!validation().isError!) {
-                      UserModel user = Get.find<UserController>().user!;
-                      int start =
-                          int.parse(startTime.toString().replaceAll(':', ''));
-                      int end =
-                          int.parse(endTime.toString().replaceAll(':', ''));
-                      BookingBody bookingBody = BookingBody(
-                        room: widget.room,
-                        courseCode: selectedCourse.code,
-                        year: user.year,
-                        day: DateFormatter.dayFromTime(selectedDay),
-                        startTime: start,
-                        endTime: end,
-                        reference: user.reference,
-                      );
-                      bookingController.createBooking(bookingBody).then(
-                        (value) async {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
-                                title: Text(
-                                  value.isSuccess ? 'Congrats!' : 'Oh-ooh',
-                                  style: bold(18),
-                                ),
-                                content: Text(
-                                  value.message,
-                                  style: semiBold(16).copyWith(
-                                    color: value.isSuccess
-                                        ? Colors.green
-                                        : AppColors.red,
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      pop(context);
-                                      if (value.isSuccess) {
-                                        pop(context);
-                                      }
-                                    },
-                                    child: const Text('Ok'),
-                                  )
-                                ],
+        bottomNavigationBar: user!.role == 0
+            ? null
+            : roomController.availableTimes != null &&
+                    roomController.availableTimes!.isEmpty
+                ? Container(
+                    color: AppColors.red,
+                    height: 62,
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Room is busy all day',
+                      style: bold(24).copyWith(color: Colors.white),
+                    ),
+                  )
+                : GetBuilder<BookingController>(builder: (bookingController) {
+                    return InkWell(
+                      onTap: () async {
+                        if (!validation().isError!) {
+                          UserModel user = Get.find<UserController>().user!;
+                          int start = int.parse(
+                              startTime.toString().replaceAll(':', ''));
+                          int end =
+                              int.parse(endTime.toString().replaceAll(':', ''));
+                          BookingBody bookingBody = BookingBody(
+                            room: widget.room,
+                            courseCode: selectedCourse.code,
+                            year: user.year,
+                            day: DateFormatter.dayFromTime(selectedDay),
+                            startTime: start,
+                            endTime: end,
+                            reference: user.reference,
+                          );
+                          bookingController.createBooking(bookingBody).then(
+                            (value) async {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    title: Text(
+                                      value.isSuccess ? 'Congrats!' : 'Oh-ooh',
+                                      style: bold(18),
+                                    ),
+                                    content: Text(
+                                      value.message,
+                                      style: semiBold(16).copyWith(
+                                        color: value.isSuccess
+                                            ? Colors.green
+                                            : AppColors.red,
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          pop(context);
+                                          if (value.isSuccess) {
+                                            pop(context);
+                                          }
+                                        },
+                                        child: const Text('Ok'),
+                                      )
+                                    ],
+                                  );
+                                },
                               );
+                              if (value.isSuccess) {
+                                await bookingController.getBookings({
+                                  'reference': user.reference,
+                                });
+                              }
                             },
                           );
-                          if (value.isSuccess) {
-                            await bookingController.getBookings({
-                              'reference': user.reference,
-                            });
-                          }
-                        },
-                      );
-                    }
-                  },
-                  child: bookingController.creating
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : Container(
-                          color: AppColors.red,
-                          height: 62,
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Book now',
-                            style: bold(24).copyWith(color: Colors.white),
-                          ),
-                        ),
-                );
-              }),
+                        }
+                      },
+                      child: bookingController.creating
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Container(
+                              color: AppColors.red,
+                              height: 62,
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Book now',
+                                style: bold(24).copyWith(color: Colors.white),
+                              ),
+                            ),
+                    );
+                  }),
         body: GetBuilder<RoomController>(
           builder: (roomController) {
             return SingleChildScrollView(
@@ -330,200 +335,204 @@ class _AddBookingState extends State<AddBooking> {
                               );
                             }),
                           ),
-                    15.h,
-                    DropdownButtonFormField(
-                      value: selectedCourse,
-                      iconEnabledColor: Theme.of(context).primaryColor,
-                      items: courses.map((course) {
-                        return DropdownMenuItem(
-                          value: course,
-                          child: Text(
-                            course.name,
-                            style: bold(16).copyWith(
-                                color: Theme.of(context).primaryColor),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedCourse = value!;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Course',
-                        labelStyle: semiBold(18).copyWith(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (endTime != null) ...[
+                    if (user!.role == 1) ...[
                       15.h,
-                      Row(
-                        children: [
-                          Text(
-                            'From',
-                            style: bold(18).copyWith(
+                      DropdownButtonFormField(
+                        value: selectedCourse,
+                        iconEnabledColor: Theme.of(context).primaryColor,
+                        items: courses.map((course) {
+                          return DropdownMenuItem(
+                            value: course,
+                            child: Text(
+                              course.name,
+                              style: bold(16).copyWith(
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCourse = value!;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Course',
+                          labelStyle: semiBold(18).copyWith(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-                          10.w,
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              borderRadius: 10.border,
-                              border: Border.all(
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                            child: InkWell(
-                              onTap: () async {
-                                TimeOfDay? startTimePicked =
-                                    await showTimePicker(
-                                  context: context,
-                                  builder: (context, child) {
-                                    return Theme(
-                                      data: ThemeData(
-                                        colorScheme: ColorScheme.light(
-                                          primary:
-                                              Theme.of(context).primaryColor,
-                                        ),
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            foregroundColor: AppColors.red,
-                                          ),
-                                        ),
-                                        dialogTheme: DialogTheme(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: 20.border,
-                                          ),
-                                        ),
-                                      ),
-                                      child: child!,
-                                    );
-                                  },
-                                  initialTime: TimeOfDay(
-                                    hour: int.parse(startTime!.h.toString()),
-                                    minute: int.parse(startTime!.m.toString()),
-                                  ),
-                                );
-                                if (startTimePicked != null) {
-                                  setState(() {
-                                    startTime = Time(startTimePicked.hour,
-                                        startTimePicked.minute);
-                                  });
-                                }
-                              },
-                              child: Text(
-                                startTime.toString(),
-                                style: semiBold(18).copyWith(
-                                  color: Theme.of(context).primaryColor,
-                                  letterSpacing: 1.2,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            'To',
-                            style: bold(18).copyWith(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-                          10.w,
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              borderRadius: 10.border,
-                              border: Border.all(
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (endTime != null) ...[
+                        15.h,
+                        Row(
+                          children: [
+                            Text(
+                              'From',
+                              style: bold(18).copyWith(
                                 color: Theme.of(context).primaryColor,
                               ),
                             ),
-                            child: InkWell(
-                              onTap: () async {
-                                TimeOfDay? endTimePicked = await showTimePicker(
-                                  context: context,
-                                  builder: (context, child) {
-                                    return Theme(
-                                      data: ThemeData(
-                                        colorScheme: ColorScheme.light(
-                                          primary:
-                                              Theme.of(context).primaryColor,
-                                        ),
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            foregroundColor: AppColors.red,
-                                          ),
-                                        ),
-                                        dialogTheme: DialogTheme(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: 20.border,
-                                          ),
-                                        ),
-                                      ),
-                                      child: child!,
-                                    );
-                                  },
-                                  initialTime: TimeOfDay(
-                                    hour: int.parse(endTime!.h.toString()),
-                                    minute: int.parse(endTime!.m.toString()),
-                                  ),
-                                );
-                                if (endTime != null) {
-                                  setState(() {
-                                    endTime = Time(endTimePicked!.hour,
-                                        endTimePicked.minute);
-                                  });
-                                }
-                              },
-                              child: Text(
-                                endTime.toString(),
-                                style: semiBold(18).copyWith(
+                            10.w,
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: 10.border,
+                                border: Border.all(
                                   color: Theme.of(context).primaryColor,
-                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              child: InkWell(
+                                onTap: () async {
+                                  TimeOfDay? startTimePicked =
+                                      await showTimePicker(
+                                    context: context,
+                                    builder: (context, child) {
+                                      return Theme(
+                                        data: ThemeData(
+                                          colorScheme: ColorScheme.light(
+                                            primary:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                          textButtonTheme: TextButtonThemeData(
+                                            style: TextButton.styleFrom(
+                                              foregroundColor: AppColors.red,
+                                            ),
+                                          ),
+                                          dialogTheme: DialogTheme(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: 20.border,
+                                            ),
+                                          ),
+                                        ),
+                                        child: child!,
+                                      );
+                                    },
+                                    initialTime: TimeOfDay(
+                                      hour: int.parse(startTime!.h.toString()),
+                                      minute:
+                                          int.parse(startTime!.m.toString()),
+                                    ),
+                                  );
+                                  if (startTimePicked != null) {
+                                    setState(() {
+                                      startTime = Time(startTimePicked.hour,
+                                          startTimePicked.minute);
+                                    });
+                                  }
+                                },
+                                child: Text(
+                                  startTime.toString(),
+                                  style: semiBold(18).copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    letterSpacing: 1.2,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      10.h,
-                      Text(
-                        'Duration: ${timeDiff(endTime!.subtractTime(startTime!))}',
-                        style: semiBold(18).copyWith(
-                          color: Theme.of(context).primaryColor,
+                            const Spacer(),
+                            Text(
+                              'To',
+                              style: bold(18).copyWith(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            10.w,
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: 10.border,
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                              child: InkWell(
+                                onTap: () async {
+                                  TimeOfDay? endTimePicked =
+                                      await showTimePicker(
+                                    context: context,
+                                    builder: (context, child) {
+                                      return Theme(
+                                        data: ThemeData(
+                                          colorScheme: ColorScheme.light(
+                                            primary:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                          textButtonTheme: TextButtonThemeData(
+                                            style: TextButton.styleFrom(
+                                              foregroundColor: AppColors.red,
+                                            ),
+                                          ),
+                                          dialogTheme: DialogTheme(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: 20.border,
+                                            ),
+                                          ),
+                                        ),
+                                        child: child!,
+                                      );
+                                    },
+                                    initialTime: TimeOfDay(
+                                      hour: int.parse(endTime!.h.toString()),
+                                      minute: int.parse(endTime!.m.toString()),
+                                    ),
+                                  );
+                                  if (endTime != null) {
+                                    setState(() {
+                                      endTime = Time(endTimePicked!.hour,
+                                          endTimePicked.minute);
+                                    });
+                                  }
+                                },
+                                child: Text(
+                                  endTime.toString(),
+                                  style: semiBold(18).copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      if (validation().isError!) ...[
-                        20.h,
-                        Center(
-                          child: Text(
-                            validation().message ?? '',
-                            textAlign: TextAlign.center,
-                            style: bold(20).copyWith(
-                              color: AppColors.red,
+                        10.h,
+                        Text(
+                          'Duration: ${timeDiff(endTime!.subtractTime(startTime!))}',
+                          style: semiBold(18).copyWith(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        if (validation().isError!) ...[
+                          20.h,
+                          Center(
+                            child: Text(
+                              validation().message ?? '',
+                              textAlign: TextAlign.center,
+                              style: bold(20).copyWith(
+                                color: AppColors.red,
+                              ),
                             ),
                           ),
-                        ),
+                        ]
                       ]
                     ]
                   ],

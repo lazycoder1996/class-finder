@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:timetable_app/controllers/booking_controller.dart';
+import 'package:timetable_app/controllers/user_controller.dart';
 import 'package:timetable_app/data/models/responses/booking_model.dart';
+import 'package:timetable_app/data/models/responses/user_model.dart';
 import 'package:timetable_app/helpers/extensions.dart';
 import 'package:timetable_app/utils/app_colors.dart';
 import 'package:timetable_app/utils/navigation.dart';
@@ -25,36 +27,46 @@ class BookingWidget extends StatefulWidget {
 }
 
 class _BookingWidgetState extends State<BookingWidget> {
+  late UserModel user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = Get.find<UserController>().user!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      startActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        extentRatio: 0.2,
-        children: [
-          SlidableAction(
-            // borderRadius: BorderRadius.circular(15),
-            padding: EdgeInsets.zero,
-            onPressed: (context) async {
-              showDialog<void>(
-                context: context,
-                barrierDismissible: true,
+      startActionPane: user.role == 0
+          ? null
+          : ActionPane(
+              motion: const ScrollMotion(),
+              extentRatio: 0.2,
+              children: [
+                SlidableAction(
+                  // borderRadius: BorderRadius.circular(15),
+                  padding: EdgeInsets.zero,
+                  onPressed: (context) async {
+                    showDialog<void>(
+                      context: context,
+                      barrierDismissible: true,
 
-                // false = user must tap button, true = tap outside dialog
-                builder: (BuildContext dialogContext) {
-                  return DeleteBookingAlert(
-                    bookingId: widget.booking.id,
-                  );
-                },
-              );
-            },
-            foregroundColor: AppColors.red,
-            backgroundColor: Colors.white,
-            icon: Icons.delete,
-            label: 'Delete',
-          ),
-        ],
-      ),
+                      // false = user must tap button, true = tap outside dialog
+                      builder: (BuildContext dialogContext) {
+                        return DeleteBookingAlert(
+                          bookingId: widget.booking.id,
+                        );
+                      },
+                    );
+                  },
+                  foregroundColor: AppColors.red,
+                  backgroundColor: Colors.white,
+                  icon: Icons.delete,
+                  label: 'Delete',
+                ),
+              ],
+            ),
       // endActionPane: ActionPane(
       //   extentRatio: 0.2,
       //   motion: const ScrollMotion(),

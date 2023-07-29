@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:timetable_app/controllers/auth_controller.dart';
-import 'package:timetable_app/helpers/extensions.dart';
+import 'package:timetable_app/controllers/user_controller.dart';
+import 'package:timetable_app/data/models/responses/user_model.dart';
 import 'package:timetable_app/helpers/font_styles.dart';
 import 'package:timetable_app/utils/images.dart';
 import 'package:timetable_app/utils/navigation.dart';
@@ -34,47 +35,56 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  late UserModel user;
+  @override
+  void initState() {
+    super.initState();
+    user = Get.find<UserController>().user!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         floatingActionButton: currentIndex == 0
             ? null
-            : FloatingActionButton(
-                onPressed: () async {
-                  if (currentIndex == 1) {
-                    showModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        builder: (context) {
-                          return const AllRooms();
+            : user.role == 0 && currentIndex == 1
+                ? null
+                : FloatingActionButton(
+                    onPressed: () async {
+                      if (currentIndex == 1) {
+                        showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (context) {
+                              return const AllRooms();
+                            });
+                        // toScreen(context, const AddBooking());
+                      } else {
+                        replaceScreen(context, const LoginScreen());
+                        Future.delayed(const Duration(seconds: 1), () async {
+                          await Get.find<AuthController>()
+                              .logout()
+                              .then((value) {});
                         });
-                    // toScreen(context, const AddBooking());
-                  } else {
-                    replaceScreen(context, const LoginScreen());
-                    Future.delayed(const Duration(seconds: 1), () async {
-                      await Get.find<AuthController>()
-                          .logout()
-                          .then((value) {});
-                    });
-                  }
-                },
-                shape: currentIndex == 1
-                    ? null
-                    : const CircleBorder(
-                        side: BorderSide(
-                          color: Colors.red,
-                          width: 2.5,
-                        ),
-                      ),
-                child: currentIndex == 1
-                    ? Icon(
-                        Icons.add,
-                        color: Theme.of(context).primaryColor,
-                        size: 35,
-                      )
-                    : SvgPicture.asset(Images.logout),
-              ),
+                      }
+                    },
+                    shape: currentIndex == 1
+                        ? null
+                        : const CircleBorder(
+                            side: BorderSide(
+                              color: Colors.red,
+                              width: 2.5,
+                            ),
+                          ),
+                    child: currentIndex == 1
+                        ? Icon(
+                            Icons.add,
+                            color: Theme.of(context).primaryColor,
+                            size: 35,
+                          )
+                        : SvgPicture.asset(Images.logout),
+                  ),
         bottomNavigationBar: SizedBox(
           height: 62,
           child: BottomAppBar(
@@ -119,7 +129,9 @@ class _DashboardState extends State<Dashboard> {
             currentIndex == 0
                 ? 'Home'
                 : currentIndex == 1
-                    ? 'Booking'
+                    ? user.role == 0
+                        ? 'Scheduled Class'
+                        : 'Booking'
                     : 'Profile',
             style: bold(20).copyWith(
               color: Theme.of(context).primaryColor,
