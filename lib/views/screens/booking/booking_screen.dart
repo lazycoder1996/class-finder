@@ -39,7 +39,8 @@ class _BookingScreenState extends State<BookingScreen> {
             UserModel user = Get.find<UserController>().user!;
 
             await bookController.getBookings({
-              'reference': user.reference,
+              'programme': user.programme,
+              'year': user.year,
             });
           },
           child: ConstrainedBox(

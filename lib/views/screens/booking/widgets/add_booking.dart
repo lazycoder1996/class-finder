@@ -153,7 +153,8 @@ class _AddBookingState extends State<AddBooking> {
                               );
                               if (value.isSuccess) {
                                 await bookingController.getBookings({
-                                  'reference': user.reference,
+                                  'programme': user.reference,
+                                  'year': user.year,
                                 });
                               }
                             },

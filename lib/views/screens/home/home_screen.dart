@@ -46,7 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
         'year': user.year,
       });
       await Get.find<BookingController>().getBookings({
-        'reference': user.reference,
+        'programme': user.programme,
+        'year': user.year,
       });
     }
     await Get.find<RoomController>().fetchLiveRooms({
