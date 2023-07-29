@@ -1,7 +1,7 @@
 class AppConstants {
   // APIS
-  // static const String baseUrl = 'https://timetableserver-production.up.railway.app';
-  static const String baseUrl = 'http://10.0.2.2:3000';
+  static const String baseUrl = 'https://timetableserver-production.up.railway.app';
+  // static const String baseUrl = 'http://10.0.2.2:3000';
   static const loginUri = '/api/auth/login';
   static const users = '/api/users';
   static const bookings = '/api/bookings';
