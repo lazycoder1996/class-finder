@@ -67,6 +67,7 @@ class _AddBookingState extends State<AddBooking> {
       selectedRange.start = Time(now.hour, now.minute);
       startTime = Time(now.hour, now.minute);
     }
+
     if (rc.availableTimes!.first.start.toString() == "00:00" &&
         day() == DateTime.now()) {}
     setState(() {
